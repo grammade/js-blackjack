@@ -50,6 +50,7 @@ function hit() {
         hitBtn.onclick = bust
 
         standBtn.classList.add("disabled")
+        resetBtn.classList.add("disabled")
     }
 }
 
