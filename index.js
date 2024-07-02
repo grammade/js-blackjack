@@ -1,188 +1,134 @@
-let dHand = document.getElementById("dealerHand")
-let dCount = document.getElementById("dealerHandCount")
-let mHand = document.getElementById("hand")
-let mCount = document.getElementById("handCount")
-let startBtn = document.getElementById("startBtn")
-let hitBtn = document.getElementById("hitBtn")
-let standBtn = document.getElementById("standBtn")
-let wl = document.getElementById("wlRatio")
-let win = 0
-let loss = 0
-let dealerCards = []
-let dealerSum = 0
-let myCards = []
-let mySum = 0
+const dealer = {
+    hand: document.getElementById("dealerHand"),
+    sum: document.getElementById("dealerHandCount")
+}
+const me = {
+    hand: document.getElementById("hand"),
+    sum: document.getElementById("handCount")
+}
+const btn = {
+    start: document.getElementById("startBtn"),
+    hit: document.getElementById("hitBtn"),
+    stand: document.getElementById("standBtn")
+}
+const wl = document.getElementById("wlRatio")
 
-let cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10] //J Q K
+let win = 0, loss = 0, dealerCards = [], dealerSum = 0, myCards = [], mySum = 0
+const cards = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 10, 10] // J Q K
 
-function starts() {
-    startBtn.classList.add("disabled")
-    hitBtn.classList.remove("disabled")
-    standBtn.classList.remove("disabled")
+const disableBtn = btn => {
+    btn.classList.add("disabled")
+    btn.onclick = null
+}
+const enableBtn = btn => btn.classList.remove("disabled")
+const resetBtn = (btn, text, onClick) => {
+    btn.innerText = text
+    btn.className = "btn btn-success mx-1 my-1 disabled"
+    btn.onclick = onClick
+}
+const updateWl = () => updateText(wl, `${win}/${loss}`)
+const updateText = (elem, text) => elem.innerText = text
 
-    hitBtn.onclick = hit
-    standBtn.onclick = stand
-    startBtn.onclick = null
 
-    let mask = generateDealerHand()
-    dHand.innerText = Array(mask).fill("-").join(" ")
-    dCount.innerText = "?"
+function startGame() {
+    disableBtn(btn.start)
+    enableBtn(btn.hit)
+    enableBtn(btn.stand)
+
+    btn.hit.onclick = hit
+    btn.stand.onclick = stand
+
+    updateText(dealer.hand, Array(generateDealerHand()).fill("-").join(" "))
+    updateText(dealer.sum, "?")
 }
 
 function hit() {
-    if (mHand.innerText == "-") mHand.innerText = null
+    if (me.hand.innerText === "-") updateText(me.hand, null)
 
-    let rand = Math.floor(Math.random() * cards.length)
-    let card = cards[rand]
+    let card = cards[Math.floor(Math.random() * cards.length)]
+
     myCards.push(card)
     mySum += card
 
-    mHand.innerText = myCards.join(", ")
-    mCount.innerText = mySum
+    updateText(me.hand, myCards.join(", "))
+    updateText(me.sum, mySum)
 
     if (mySum > 21) {
-        hitBtn.innerText = "BUST"
-        applyBorderEffect("lose")
-        hitBtn.classList.remove("btn-primary")
-        hitBtn.classList.add("btn-danger")
-        standBtn.onclick = null
-        hitBtn.onclick = bust
-
-        standBtn.classList.add("disabled")
-    }else if (mySum == 21){
-        hitBtn.innerText = "JACKPOT"
-        applyBorderEffect("win")
-        standBtn.onclick = null
-        hitBtn.onclick = doWin
-
-        standBtn.classList.add("disabled")
+        disableBtn(btn.stand)
+        endGame(btn.hit, "BUST", "lose", bust)
     }
+    else if (mySum === 21) endGame(btn.hit, "JACKPOT", "win", doWin)
 }
 
-function bust() {
-    loss += 1
+function endGame(btn, btnText, result, onClick) {
+    updateText(btn, btnText)
+    applyBorderEffect(result)
+
+    if (result === "lose") btn.classList.replace("btn-success", "btn-danger")
+
+    btn.onclick = onClick
+}
+
+function bust() { loss++; finalizeGame() }
+function doWin() { win++; finalizeGame() }
+function doLose() { loss++; finalizeGame() }
+function youWin(btn) { endGame(btn, "WIN", "win", doWin) }
+function youLose(btn) { endGame(btn, "LOSE", "lose", doLose) }
+
+function finalizeGame() {
     updateWl()
-    clear()
-}
-
-function updateWl() {
-    wl.innerText = win + "/" + loss
+    resetGame()
 }
 
 function stand() {
-    dHand.innerText = dealerCards.join(", ")
-    dCount.innerText = dealerSum
-    hitBtn.classList.add("disabled")
-    hitBtn.onclick = null
+    updateText(dealer.hand, dealerCards.join(", "))
+    updateText(dealer.sum, dealerSum)
 
-    if(dealerSum > 21){
-        youWin()
-        return
-    }
-    
-    if(dealerSum == mySum){
-        youDraw()
-        return
-    }
-    
-    if (dealerSum < mySum) {
-        youWin()
-    } else {
-        youLose()
-    }
-}
+    disableBtn(btn.hit)
 
-function youDraw(){
-    standBtn.innerText = "WIN"
-    applyBorderEffect("win")
-    standBtn.onclick = doWin
-}
-
-function youWin(){
-    standBtn.innerText = "WIN"
-    applyBorderEffect("win")
-    standBtn.onclick = doWin
-}
-
-function youLose(){
-    standBtn.innerText = "LOSE"
-    applyBorderEffect("lose")
-    standBtn.classList.remove("btn-primary")
-    standBtn.classList.add("btn-danger")
-    standBtn.onclick = doLose
-    
-}
-
-function doDraw(){
-    updateWl()
-    clear()
-}
-
-function doWin() {
-    win += 1
-    updateWl()
-    clear()
-}
-
-function doLose(){
-    loss += 1
-    updateWl()
-    clear()
+    if (dealerSum > 21 || dealerSum < mySum) youWin(btn.stand)
+    else if (dealerSum === mySum) youWin(btn.stand)
+    else youLose(btn.stand)
 }
 
 function generateDealerHand() {
-    let count = 0
-
-    while (true) {
-        let rand = Math.floor(Math.random() * cards.length)
-        let card = cards[rand]
-        dealerSum = dealerSum + card
-        count++
-
+    while (dealerSum < 17) {
+        let card = cards[Math.floor(Math.random() * cards.length)]
         dealerCards.push(card)
-        if (dealerSum >= 17)
-            break
+        dealerSum += card
     }
-    return count
+    return dealerCards.length
 }
 
-function clear() {
-    startBtn.classList.remove("disabled")
-    hitBtn.className = "btn btn-success mx-1 my-1 disabled"
-    hitBtn.innerText = "HIT"
-    standBtn.className = "btn btn-success mx-1 my-1 disabled"
-    standBtn.innerText = "STAND"
+function resetGame() {
+    enableBtn(btn.start)
+    resetBtn(btn.hit, "HIT", null)
+    resetBtn(btn.stand, "STAND", null)
 
-    startBtn.onclick = starts
-    standBtn.onclick = null
-    hitBtn.onclick = null
-
-    dHand.innerText = "-"
-    dCount.innerText = "-"
-    mHand.innerText = "-"
-    mCount.innerText = "-"
-
-    dealerCards = []
-    dealerSum = 0
-
-    myCards = []
-    mySum = 0
+    btn.start.onclick = startGame
+    
+    updateText(dealer.hand, "-")
+    updateText(dealer.sum, "-")
+    updateText(me.hand, "-")
+    updateText(me.sum, "-")
+    
+    let resetEl = [dealer.hand, dealer.sum, me.hand, me.sum]
+    resetEl.map(elem => updateText(elem, "-"))
+    
+    dealerCards = [], dealerSum = 0
+    myCards = [], mySum = 0
 }
 
 function applyBorderEffect(result) {
     const dealerContainer = document.getElementById("cardContainer1")
     const playerContainer = document.getElementById("cardContainer2")
+    const borderClass = `border-${result}`
 
-    if (result === "win") {
-        dealerContainer.classList.add("border-win");
-        playerContainer.classList.add("border-win");
-    } else {
-        dealerContainer.classList.add("border-lose");
-        playerContainer.classList.add("border-lose");
-    }
-
+    dealerContainer.classList.add(borderClass);
+    playerContainer.classList.add(borderClass);
     setTimeout(() => {
-        dealerContainer.classList.remove("border-win", "border-lose");
-        playerContainer.classList.remove("border-win", "border-lose");
-    }, 1000); 
+        dealerContainer.classList.remove(borderClass);
+        playerContainer.classList.remove(borderClass);
+    }, 1000);
 }
+
