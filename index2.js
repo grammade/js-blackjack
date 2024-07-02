@@ -21,7 +21,6 @@ const disableBtn = btn => {
     btn.onclick = null
 }
 const enableBtn = btn => btn.classList.remove("disabled")
-const updateText = (elem, text) => elem.innerText = text
 const resetBtn = (btn, text, onClick) => {
     btn.innerText = text
     btn.className = "btn btn-success mx-1 my-1 disabled"
@@ -107,13 +106,27 @@ function resetGame() {
 
     btn.start.onclick = startGame
 
+    
+    
+    
     updateText(dealer.hand, "-")
     updateText(dealer.sum, "-")
     updateText(me.hand, "-")
     updateText(me.sum, "-")
+    
+    let anjay = [dealer.hand, dealer.sum, me.hand, me.sum]
+    [dealer.hand, dealer.sum, me.hand, me.sum].map(elem => updateText(elem, "-"))
+    
+    
+    
+    
+    
+    
     dealerCards = [], dealerSum = 0
     myCards = [], mySum = 0
 }
+
+const updateText = (elem, text) => elem.innerText = text
 
 function applyBorderEffect(result) {
     const dealerContainer = document.getElementById("cardContainer1")
