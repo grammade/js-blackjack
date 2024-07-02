@@ -1,0 +1,83 @@
+
+body {
+    background: linear-gradient(to bottom right, #882474, #122a42);
+    color: white;
+    height: 100vh;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-direction: column;
+}
+
+.card-container {
+    min-height: 200px;
+    border: 2px dashed #ffffff;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 20px;
+    padding: 10px;
+    position: relative;
+}
+
+.hand-count {
+    position: absolute;
+    bottom: 10px;
+    right: 10px;
+    margin: 0;
+}
+
+.btn-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 20px;
+}
+
+.btn {
+    width: 100px;
+}
+
+.btn {
+    width: 100px;
+}
+
+.wl-ratio-container {
+    background: linear-gradient(to left, hsla(312, 98%, 23%, 0.863), hsl(209, 72%, 11%));
+    width: 100%;
+    padding: 10px;
+    border-radius: 5px;
+}
+
+@keyframes border-win {
+    0% {
+        border-color: white;
+    }
+    50% {
+        border-color: rgb(0, 248, 0);
+    }
+    100% {
+        border-color: white;
+    }
+}
+
+@keyframes border-lose {
+    0% {
+        border-color: white;
+    }
+    50% {
+        border-color: red;
+    }
+    100% {
+        border-color: white;
+    }
+}
+
+.border-win {
+    animation: border-win 1s forwards;
+}
+
+.border-lose {
+    animation: border-lose 1s forwards;
+}

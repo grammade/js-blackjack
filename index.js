@@ -5,7 +5,6 @@ let mCount = document.getElementById("handCount")
 let startBtn = document.getElementById("startBtn")
 let hitBtn = document.getElementById("hitBtn")
 let standBtn = document.getElementById("standBtn")
-let resetBtn = document.getElementById("resetBtn")
 let wl = document.getElementById("wlRatio")
 let win = 0
 let loss = 0
@@ -43,14 +42,20 @@ function hit() {
 
     if (mySum > 21) {
         hitBtn.innerText = "BUST"
+        applyBorderEffect("lose")
         hitBtn.classList.remove("btn-primary")
         hitBtn.classList.add("btn-danger")
-        resetBtn.onclick = null
         standBtn.onclick = null
         hitBtn.onclick = bust
 
         standBtn.classList.add("disabled")
-        resetBtn.classList.add("disabled")
+    }else if (mySum == 21){
+        hitBtn.innerText = "JACKPOT"
+        applyBorderEffect("win")
+        standBtn.onclick = null
+        hitBtn.onclick = doWin
+
+        standBtn.classList.add("disabled")
     }
 }
 
@@ -68,8 +73,6 @@ function stand() {
     dHand.innerText = dealerCards.join(", ")
     dCount.innerText = dealerSum
     hitBtn.classList.add("disabled")
-    resetBtn.classList.add("disabled")
-    resetBtn.onclick = null
     hitBtn.onclick = null
 
     if(dealerSum > 21){
@@ -96,15 +99,16 @@ function youDraw(){
 
 function youWin(){
     standBtn.innerText = "WIN"
+    applyBorderEffect("win")
     standBtn.onclick = doWin
 }
 
 function youLose(){
     standBtn.innerText = "LOSE"
+    applyBorderEffect("lose")
     standBtn.classList.remove("btn-primary")
     standBtn.classList.add("btn-danger")
     standBtn.onclick = doLose
-    resetBtn.onclick = null
     
 }
 
@@ -141,10 +145,6 @@ function generateDealerHand() {
     return count
 }
 
-function reset() {
-    clear()
-}
-
 function clear() {
     startBtn.classList.remove("disabled")
     hitBtn.className = "btn btn-success mx-1 my-1 disabled"
@@ -155,9 +155,6 @@ function clear() {
     startBtn.onclick = starts
     standBtn.onclick = null
     hitBtn.onclick = null
-    
-    resetBtn.onclick = reset
-    resetBtn.classList.remove("disabled")
 
     dHand.innerText = "-"
     dCount.innerText = "-"
@@ -169,4 +166,22 @@ function clear() {
 
     myCards = []
     mySum = 0
+}
+
+function applyBorderEffect(result) {
+    const dealerContainer = document.getElementById("cardContainer1")
+    const playerContainer = document.getElementById("cardContainer2")
+
+    if (result === "win") {
+        dealerContainer.classList.add("border-win");
+        playerContainer.classList.add("border-win");
+    } else {
+        dealerContainer.classList.add("border-lose");
+        playerContainer.classList.add("border-lose");
+    }
+
+    setTimeout(() => {
+        dealerContainer.classList.remove("border-win", "border-lose");
+        playerContainer.classList.remove("border-win", "border-lose");
+    }, 1000); 
 }

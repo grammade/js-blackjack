@@ -6,56 +6,20 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>JokoIreng</title>
     <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/4.5.2/css/bootstrap.min.css">
-    <style>
-        body {
-            background: linear-gradient(to bottom right, #882474, #122a42);
-            color: white;
-            height: 100vh;
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            flex-direction: column;
-        }
-
-        .card-container {
-            min-height: 200px;
-            border: 2px dashed #fff;
-            display: flex;
-            align-items: center;
-            justify-content: center;
-            margin-bottom: 20px;
-            padding: 10px;
-            position: relative;
-        }
-
-        .hand-count {
-            position: absolute;
-            bottom: 10px;
-            right: 10px;
-            margin: 0;
-        }
-
-        .btn-container {
-            margin-bottom: 20px;
-        }
-
-        .btn-container {
-            margin-bottom: 20px;
-        }
-    </style>
+    <link rel="stylesheet" href="style.css">
 </head>
 
 <body>
     <div class="container text-center">
         <h1 class="mb-4">JokoIreng</h1>
         <h2 class="mb-4">Dealer's hand:</h2>
-        <div class="card-container mb-4">
+        <div id="cardContainer1" class="card-container mb-4">
             <h2 id="dealerHand">-</h2>
             <h3 id="dealerHandCount" class="hand-count">-</h3>
         </div>
         <h2 class="mb-4">Your hand:</h2>
-        <div class="btn-container mb-4">
-            <div class="card-container mb-4">
+        <div class="mb-4">
+            <div id="cardContainer2" class="card-container mb-4">
                 <h2 id="hand">-</h2>
                 <h3 id="handCount" class="hand-count">-</h3>
             </div>
@@ -63,14 +27,14 @@
 
         <div class="btn-container mb-4">
             <button id="startBtn" onclick="starts()" class="btn btn-primary mx-1 my-1">Start</button>
-            <button id="hitBtn"  class="btn btn-success mx-1 my-1 disabled">HIT</button>
-            <button id="standBtn"  class="btn btn-success mx-1 my-1 disabled">STAND</button>
-            <button id="resetBtn" onclick="reset()" class="btn btn-secondary my-1">Reset</button>
+            <button id="hitBtn" class="btn btn-success mx-1 my-1 disabled">HIT</button>
+            <button id="standBtn" class="btn btn-success mx-1 my-1 disabled">STAND</button>
         </div>
-        <div>
-            <h5>W/L Ratio:</h5>
-            <p id="wlRatio">0/0</p>
-        </div>
+    </div>
+    <div class="wl-ratio-container text-center">
+        <h5>W/L Ratio:</h5>
+        <p id="wlRatio">0/0</p>
+    </div>
 </body>
 <script src="index.js"></script>
 
