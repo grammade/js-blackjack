@@ -94,6 +94,7 @@ function stand() {
 
 function youDraw(){
     standBtn.innerText = "WIN"
+    applyBorderEffect("win")
     standBtn.onclick = doWin
 }
 
